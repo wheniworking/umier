@@ -14,7 +14,7 @@ public class ResponseBuilder {
     private int code;
     private String message;
     private String trace;
-    private DataMap data;
+    private DataMap data = new DataMap();
 
 
     public ResponseBuilder ok() {
