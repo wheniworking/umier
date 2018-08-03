@@ -1,30 +1,33 @@
 package com.longwei.umier.config;
 
-import me.chanjar.weixin.common.api.WxConsts;
-import me.chanjar.weixin.common.error.WxErrorException;
-import me.chanjar.weixin.common.session.WxSessionManager;
-import me.chanjar.weixin.mp.api.WxMpInMemoryConfigStorage;
-import me.chanjar.weixin.mp.api.WxMpMessageHandler;
-import me.chanjar.weixin.mp.api.WxMpMessageRouter;
-import me.chanjar.weixin.mp.api.WxMpService;
+import me.chanjar.weixin.mp.api.*;
 import me.chanjar.weixin.mp.api.impl.WxMpServiceImpl;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlMessage;
-import me.chanjar.weixin.mp.bean.message.WxMpXmlOutMessage;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Map;
 
 @Configuration
 public class WxConfiguration {
 
+    @Value("${wx.appId}")
+    private String appId;
+
+    @Value("${wx.appSecret}")
+    private String appSecret;
+
+    @Value("${wx.token}")
+    private String token;
+
+    @Value("${wx.aesKey}")
+    private String aesKey;
+
     @Bean
-    public WxMpInMemoryConfigStorage wxMpInMemoryConfigStorage() {
+    public WxMpConfigStorage wxMpInMemoryConfigStorage() {
         WxMpInMemoryConfigStorage config = new WxMpInMemoryConfigStorage();
-        config.setAppId("..."); // 设置微信公众号的appid
-        config.setSecret("..."); // 设置微信公众号的app corpSecret
-        config.setToken("..."); // 设置微信公众号的token
-        config.setAesKey("..."); // 设置微信公众号的EncodingAESKey
+        config.setAppId(appId); // 设置微信公众号的appid
+        config.setSecret(appSecret); // 设置微信公众号的app corpSecret
+        config.setToken(token); // 设置微信公众号的token
+        config.setAesKey(aesKey); // 设置微信公众号的EncodingAESKey
         return config;
     }
 
