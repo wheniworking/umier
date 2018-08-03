@@ -11,5 +11,6 @@
         VALUES (
         #{unionId},#{openId},#{type},#{createTime},#{state}
         )
+        on duplicate key update c_state = values(c_state)
     </insert>
 </mapper>

@@ -15,12 +15,7 @@ public class WXMsgEventController {
     @Autowired
     private WXMsgEventService wxMsgEventService;
 
-    @GetMapping(value = "/msg")
-    public String connectWechat(@RequestParam("echostr") String echoStr) {
-        return echoStr;
-    }
-
-    @PostMapping(value = "/msg")
+    @RequestMapping(value = "/msg")
     public void receiveEvent(HttpServletRequest request, HttpServletResponse response ) throws IOException {
         wxMsgEventService.handleEvent(request, response);
     }
