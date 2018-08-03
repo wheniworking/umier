@@ -21,7 +21,7 @@ public class WXMsgEventController {
 
     @PostMapping(value = "/msg")
     public Object receiveEvent(HttpServletRequest request, HttpServletResponse response ) {
-        wxMsgEventService.handleEvent();
+        wxMsgEventService.handleEvent(request, response);
         return null;
     }
 
