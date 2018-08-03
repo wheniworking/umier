@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longwei.umier.dao.UmierExamDao">
+
+    <resultMap id="examMap" type="com.longwei.umier.entity.UmierExam">
+        <result column="c_id" property="id"/>
+        <result column="c_exam_name" property="name"/>
+        <result column="c_create_time" property="createTime"/>
+        <result column="c_state" property="state"/>
+    </resultMap>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO t_exam (c_id, c_exam_name, c_create_time, c_state) VALUES (#{id},#{name},#{createTime},#{state})
+        ON duplicate key update c_exam_name = #{name}
+    </insert>
+
+    <select id="getExams" resultMap="examMap">
+        SELECT * FROM t_exam WHERE c_state = 0
+    </select>
+    <select id="getExamById" resultType="com.longwei.umier.entity.UmierExam">
+        SELECT * FROM t_exam WHERE c_id = #{id} and c_state = 0
+    </select>
+
+    <resultMap id="examQuestionMap" type="com.longwei.umier.entity.UmierExamQuestion">
+        <result column="c_id" property="id"/>
+        <result column="c_exam_id" property="examId"/>
+        <result column="c_question" property="question"/>
+        <result column="c_choice" property="choice"/>
+        <result column="c_type" property="type"/>
+        <result column="c_answer" property="answer"/>
+        <result column="c_score" property="score"/>
+        <result column="c_create_time" property="createTime"/>
+        <result column="c_state" property="state"/>
+    </resultMap>
+    <select id="getExamQuestions" resultMap="examQuestionMap">
+        SELECT * FROM t_exam_question where c_exam_id = #{examId} and c_state = 0
+    </select>
+
+    <select id="getExamQuestionsWithoutAnswer" resultMap="examQuestionMap">
+        SELECT c_id, c_exam_id, c_question, c_choice, c_type, c_score, c_create_time, c_state FROM t_exam_question where c_exam_id = #{examId} and c_state = 0
+    </select>
+    <select id="getExamQuestionByIds" resultType="com.longwei.umier.entity.UmierExamQuestion">
+        SELECT * FROM t_exam_question WHERE
+        c_exam_id = #{examId} AND
+        c_state = 0
+        <if test="unionids != null">
+        AND c_id IN
+            <foreach collection="questionIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+    <insert id="insertQuestions">
+        INSERT INTO t_exam_question
+        (c_id, c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
+        VALUES
+        <foreach collection="questions" item="question" index="index" separator=",">
+            (
+            #{question.id},
+            #{question.examId},
+            #{question.question},
+            #{question.choice},
+            #{question.type},
+            #{question.answer},
+            #{question.score},
+            #{question.createTime},
+            #{question.state}
+            )
+        </foreach>
+        on duplicate key update
+        c_question = values(c_question),
+        c_type = values(c_type),
+        c_answer = values(c_answer),
+        c_score = values(c_score),
+        c_create_time = values(c_create_time),
+        c_state = values(c_state)
+
+    </insert>
+    <insert id="insertUserAnswer">
+        INSERT INTO t_exam_user
+        (c_union_id, c_exam_id, c_question_id, c_user_answer, c_score, c_create_time, c_state)
+        VALUES
+        (
+        #{unionId},
+        #{examId},
+        #{questionId},
+        #{answer},
+        #{score},
+        #{createTime},
+        #{state}
+        )
+    </insert>
+
+
+</mapper>
