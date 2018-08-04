@@ -13,4 +13,14 @@
         )
         on duplicate key update c_state = values(c_state)
     </insert>
+
+    <resultMap id="wxMp" type="com.longwei.umier.entity.WxMp">
+        <result column="c_id" property="id"/>
+        <result column="c_union_id" property="name"/>
+        <result column="c_open_id" property="openId"/>
+    </resultMap>
+
+    <select id="getByOpenId" resultMap="wxMp">
+        SELECT c_id,c_union_id,c_open_id FROM t_wx_mp WHERE c_open_id = #{openId} and c_state = 0
+    </select>
 </mapper>

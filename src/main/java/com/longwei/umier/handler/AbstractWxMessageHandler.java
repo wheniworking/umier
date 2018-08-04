@@ -8,8 +8,6 @@ import org.slf4j.LoggerFactory;
 /**
  * 消息处理Handler的父类
  *
- * Created by FirenzesEagle on 2016/7/27 0027.
- * Email:liumingbo2008@gmail.com
  */
 public abstract class AbstractWxMessageHandler implements WxMpMessageHandler {
     protected Logger logger = LoggerFactory.getLogger(getClass());
