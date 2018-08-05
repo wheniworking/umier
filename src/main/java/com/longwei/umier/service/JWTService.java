@@ -1,21 +1,33 @@
 package com.longwei.umier.service;
 
+import com.longwei.umier.vo.WxMpUserInfoVo;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import javax.annotation.PostConstruct;
 import java.security.Key;
+import java.util.Map;
 
+@Service
 public class JWTService {
 
-    public String generateJWTToken() {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-        String jws = Jwts.builder().setSubject("Joe").setSubject("abc").signWith(key).compact();
-        return jws;
+    @Value("${jwt.key}")
+    private String keyStr;
+
+    private Key key;
+
+    @PostConstruct
+    public void init(){
+        key = Keys.hmacShaKeyFor(keyStr.getBytes());
     }
 
-    public static void main(String[] args) {
-        String jws = new JWTService().generateJWTToken();
-        System.out.println(jws);
+    public String generateJWTToken(WxMpUserInfoVo userInfoVo) {
+        return Jwts.builder().addClaims(userInfoVo.toMap()).signWith(key).compact();
+    }
+
+    public WxMpUserInfoVo decryptJWTToken(String jws) {
+        Map<String, Object> map = Jwts.parser().setSigningKey(key).parseClaimsJws(jws).getBody();
+        return WxMpUserInfoVo.parse(map);
     }
 }

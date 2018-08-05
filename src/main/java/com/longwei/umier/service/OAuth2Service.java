@@ -2,6 +2,7 @@ package com.longwei.umier.service;
 
 import com.longwei.umier.dao.WxMpDao;
 import com.longwei.umier.entity.WxMp;
+import com.longwei.umier.vo.WxMpUserInfoVo;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -31,6 +32,9 @@ public class OAuth2Service {
     @Autowired
     private WxMpDao wxMpDao;
 
+    @Autowired
+    private JWTService jwtService;
+
 
     public String buildOAuth2Url(String page) {
         return wxMpService.oauth2buildAuthorizationUrl(oauthUrl,
@@ -51,9 +55,9 @@ public class OAuth2Service {
         wxMpDao.insert(wxMp);
 
         //生成jwt token下发到浏览器中
-        Cookie cookie = new Cookie("x-auth-token", "");
+        String jws = jwtService.generateJWTToken(new WxMpUserInfoVo(wxMpUser));
+        Cookie cookie = new Cookie("x-auth-token", jws);
         cookie.setHttpOnly(true);
-        cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
 
         //重定向到约定地址
