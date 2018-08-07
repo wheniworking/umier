@@ -2,6 +2,7 @@ package com.longwei.umier.dao;
 
 import com.longwei.umier.entity.UmierExam;
 import com.longwei.umier.entity.UmierExamQuestion;
+import com.longwei.umier.entity.UmierExamRetRule;
 import com.longwei.umier.entity.UmierUserAnswer;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -17,13 +18,17 @@ public interface UmierExamDao {
 
     UmierExam getExamById(@Param("id") int id);
 
-    List<UmierExamQuestion> getExamQuestions(@Param("examId")int examId);
+    List<UmierExamQuestion> getExamQuestions(@Param("quesId")Integer quesId, @Param("examId")Integer examId);
 
     List<UmierExamQuestion> getExamQuestionsWithoutAnswer(@Param("examId")int examId);
-
-    void insertQuestions(@Param("questions") List<UmierExamQuestion> questions);
 
     List<UmierExamQuestion> getExamQuestionByIds(@Param("examId")int examId, @Param("questionIds")  List<Integer> questionIds);
 
     void insertUserAnswer(List<UmierUserAnswer> umierUserAnswers);
+
+    List<UmierExamRetRule> getExamRetRules(@Param("examId")int examId);
+
+    void insertRules(@Param("rules")List<UmierExamRetRule> questions);
+
+    void insertQuestion(UmierExamQuestion umierExamQuestion);
 }

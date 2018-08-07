@@ -35,7 +35,16 @@
         <result column="c_state" property="state"/>
     </resultMap>
     <select id="getExamQuestions" resultMap="examQuestionMap">
-        SELECT * FROM t_exam_question where c_exam_id = #{examId} and c_state = 0
+        SELECT * FROM t_exam_question where  c_state = 0
+        <if test="examId != null">
+        and
+        c_exam_id = #{examId}
+        </if>
+
+        <if test="quesId != null">
+            and
+            c_id = #{quesId}
+        </if>
     </select>
 
     <select id="getExamQuestionsWithoutAnswer" resultMap="examQuestionMap">
@@ -53,30 +62,29 @@
         </if>
     </select>
 
-    <insert id="insertQuestions">
-        INSERT INTO t_exam_question
-        (c_id, c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
+
+    <insert id="insertRules">
+        INSERT INTO t_exam_ret_rule
+        (c_exam_id, c_desc, c_lower_score, c_upper_score, c_create_time, c_state)
         VALUES
-        <foreach collection="questions" item="question" index="index" separator=",">
+        <foreach collection="rules" item="item" index="index" separator=",">
             (
-            #{question.id},
-            #{question.examId},
-            #{question.question},
-            #{question.choice},
-            #{question.type},
-            #{question.answer},
-            #{question.score},
-            #{question.createTime},
-            #{question.state}
+            #{item.id},
+            #{item.examId},
+            #{item.description},
+            #{item.lowerScore},
+            #{item.upperScore},
+            #{item.createTime},
+            #{item.state}
             )
         </foreach>
         on duplicate key update
-        c_question = values(c_question),
-        c_type = values(c_type),
-        c_answer = values(c_answer),
-        c_score = values(c_score),
+        c_desc = values(c_desc),
+        c_lower_score = values(c_lower_score),
+        c_upper_score = values(c_upper_score),
         c_create_time = values(c_create_time),
         c_state = values(c_state)
+
 
     </insert>
     <insert id="insertUserAnswer">
@@ -93,6 +101,40 @@
         #{state}
         )
     </insert>
+    <insert id="insertQuestion">
+        INSERT INTO t_exam_question
+        (c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
+        VALUES
+        (
+        #{examId},
+        #{question},
+        #{choice},
+        #{type},
+        #{answer},
+        #{createTime},
+        #{state}
+        )
+        on duplicate key update
+        c_question = values(c_question),
+        c_type = values(c_type),
+        c_answer = values(c_answer),
+        c_score = values(c_score),
+        c_create_time = values(c_create_time),
+        c_state = values(c_state)
 
+    </insert>
+
+    <resultMap id="examRetRuleMap" type="com.longwei.umier.entity.UmierExamRetRule">
+        <result column="c_id" property="id"/>
+        <result column="c_exam_id" property="examId"/>
+        <result column="c_desc" property="description"/>
+        <result column="c_lower_score" property="lowerScore"/>
+        <result column="c_upper_score" property="upperScore"/>
+        <result column="c_create_time" property="createTime"/>
+        <result column="c_state" property="state"/>
+    </resultMap>
+    <select id="getExamRetRules" resultMap="examRetRuleMap">
+        SELECT * FROM t_exam_ret_rule WHERE c_exam_id = #{examId} and c_state = 0
+    </select>
 
 </mapper>

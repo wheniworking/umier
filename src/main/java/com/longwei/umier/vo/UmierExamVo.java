@@ -6,7 +6,7 @@ public class UmierExamVo {
 
     private int id;
     private String name;
-    private List<UmierExamQuestionVo> questions;
+    private List<UmierExamRetRuleVo> retRules;
 
     public int getId() {
         return id;
@@ -24,12 +24,12 @@ public class UmierExamVo {
         this.name = name;
     }
 
-    public List<UmierExamQuestionVo> getQuestions() {
-        return questions;
+    public List<UmierExamRetRuleVo> getRetRules() {
+        return retRules;
     }
 
-    public void setQuestions(List<UmierExamQuestionVo> questions) {
-        this.questions = questions;
+    public void setRetRules(List<UmierExamRetRuleVo> retRules) {
+        this.retRules = retRules;
     }
 }
 

@@ -61,10 +61,10 @@ public class UmierExamQuestionVo {
         this.score = score;
     }
 
-    public UmierExamQuestion toUmierExamQuestion(UmierExam exam) {
+    public UmierExamQuestion toUmierExamQuestion(int examId) {
         UmierExamQuestion q = new UmierExamQuestion();
         q.setId(id);
-        q.setExamId(exam.getId());
+        q.setExamId(examId);
         q.setQuestion(question);
         q.setChoice(choice);
         q.setAnswer(answer);
