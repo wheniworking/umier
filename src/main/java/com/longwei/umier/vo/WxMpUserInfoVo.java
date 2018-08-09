@@ -128,11 +128,11 @@ public class WxMpUserInfoVo {
 
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
-        Field[] fields = this.getClass().getFields();
+        Field[] fields = this.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                Object obj = field.get(field);
+                Object obj = field.get(this);
                 if(obj!= null) {
                     map.put(field.getName(), obj);
                 }

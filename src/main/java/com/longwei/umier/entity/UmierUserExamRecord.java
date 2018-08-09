@@ -2,13 +2,12 @@ package com.longwei.umier.entity;
 
 import java.util.Date;
 
-public class UmierUserAnswer {
+public class UmierUserExamRecord {
 
     private String unionId;
     private int examId;
-    private int questionId;
-    private String answer;
     private int score;
+    private String shareId;
     private Date createTime;
     private int state;
 
@@ -28,20 +27,12 @@ public class UmierUserAnswer {
         this.examId = examId;
     }
 
-    public int getQuestionId() {
-        return questionId;
+    public String getShareId() {
+        return shareId;
     }
 
-    public void setQuestionId(int questionId) {
-        this.questionId = questionId;
-    }
-
-    public String getAnswer() {
-        return answer;
-    }
-
-    public void setAnswer(String answer) {
-        this.answer = answer;
+    public void setShareId(String shareId) {
+        this.shareId = shareId;
     }
 
     public int getScore() {

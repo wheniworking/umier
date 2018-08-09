@@ -6,6 +6,7 @@ public class UmierExamRetRule {
 
     private int id;
     private int examId;
+    private int groupActivityId;
     private String description;
     private int lowerScore;
     private int upperScore;
@@ -67,5 +68,13 @@ public class UmierExamRetRule {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public int getGroupActivityId() {
+        return groupActivityId;
+    }
+
+    public void setGroupActivityId(int groupActivityId) {
+        this.groupActivityId = groupActivityId;
     }
 }

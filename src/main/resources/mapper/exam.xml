@@ -89,13 +89,12 @@
     </insert>
     <insert id="insertUserAnswer">
         INSERT INTO t_exam_user
-        (c_union_id, c_exam_id, c_question_id, c_user_answer, c_score, c_create_time, c_state)
+        (c_union_id, c_exam_id, c_share_id, c_score, c_create_time, c_state)
         VALUES
         (
         #{unionId},
         #{examId},
-        #{questionId},
-        #{answer},
+        #{shareId},
         #{score},
         #{createTime},
         #{state}
@@ -135,6 +134,19 @@
     </resultMap>
     <select id="getExamRetRules" resultMap="examRetRuleMap">
         SELECT * FROM t_exam_ret_rule WHERE c_exam_id = #{examId} and c_state = 0
+    </select>
+
+    <resultMap id="examUserRecord" type="com.longwei.umier.entity.UmierUserExamRecord">
+        <result column="c_id" property="id"/>
+        <result column="c_exam_id" property="examId"/>
+        <result column="c_union_id" property="unionId"/>
+        <result column="c_nickname" property="nickname"/>
+        <result column="c_score" property="score"/>
+        <result column="c_create_time" property="createTime"/>
+        <result column="c_state" property="state"/>
+    </resultMap>
+    <select id="getUserExamRecord" resultMap="examUserRecord">
+        SELECT * FROM t_exam_user WHERE c_share_id = #{shareId} and c_state = 0
     </select>
 
 </mapper>

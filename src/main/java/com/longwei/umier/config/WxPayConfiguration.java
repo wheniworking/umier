@@ -14,22 +14,22 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class WxPayConfiguration {
-	@Value("#{wxPayProperties.appId}")
+	@Value("${wx.pay.appId}")
 	private String appId;
 
-	@Value("#{wxPayProperties.mchId}")
+	@Value("${wx.pay.mchId}")
 	private String mchId;
 
-	@Value("#{wxPayProperties.mchKey}")
+	@Value("${wx.pay.mchKey}")
 	private String mchKey;
 
-	@Value("#{wxPayProperties.subAppId}")
+	@Value("${wx.pay.subAppId}")
 	private String subAppId;
 
-	@Value("#{wxPayProperties.subMchId}")
+	@Value("${wx.pay.subMchId}")
 	private String subMchId;
 
-	@Value("#{wxPayProperties.keyPath}")
+	@Value("${wx.pay.keyPath}")
 	private String keyPath;
 
 	@Bean

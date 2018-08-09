@@ -1,0 +1,29 @@
+@startuml
+user -> wx_browser: 点击打开页面
+wx_browser -> server : http://f70eec9c.ngrok.i/测评页面
+server -> wx_browser: 302 http://api.weixin.com/XXX
+wx_browser -> wx_server : http://api.weixin.com/XXX
+wx_server -> wx_browser: 302 http://f70eec9c.ngrok.io/测评/auth?code=XXXX
+wx_browser -> server: http://f70eec9c.ngrok.io/测评/auth?code=XXXX
+server -> wx_browser: 写cookie & 302 http://f70eec9c.ngrok.io/static/测评
+wx_browser -> node_front: http://f70eec9c.ngrok.io/static/测评
+node_front -> server: cookie & 页面状态判断
+server -> node_front: isShare isSameUser 得分情况与课程推荐内容
+alt isShare is true
+  alt isSameUser is true
+      node_front -> wx_browser: 按钮显示 重新测试
+  else
+      node_front -> wx_browser: 按钮显示 点击测试
+  end
+else 不是分享链接
+server -> node_front: 正常首页
+end
+
+user -> wx_browser: 分享到朋友圈
+wx_browser -> node_front:
+node_front -> server: cookie
+server -> server: jsapiticket & shareId 保存shareID和用户本次考试关系
+server -> node_front: jsapiticket & shareId
+node_front -> node_front: 生成分享地址http://f70eec9c.ngrok.i/测评页面?shareId=XXXX
+
+@enduml

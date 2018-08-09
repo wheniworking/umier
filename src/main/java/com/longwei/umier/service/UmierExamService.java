@@ -1,15 +1,12 @@
 package com.longwei.umier.service;
 
 import com.longwei.umier.dao.UmierExamDao;
-import com.longwei.umier.entity.UmierExam;
-import com.longwei.umier.entity.UmierExamQuestion;
-import com.longwei.umier.entity.UmierExamRetRule;
-import com.longwei.umier.entity.UmierUserAnswer;
+import com.longwei.umier.entity.*;
+import com.longwei.umier.interceptor.AuthInfoHolder;
 import com.longwei.umier.vo.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,12 +75,11 @@ public class UmierExamService {
     }
 
 
-    public void submitExam(UmierUserAnswerVo userAnswer) {
+    public UmierExamUserRetVo submitExam(UmierUserAnswerVo userAnswer) {
         List<Integer> questionIds = userAnswer.getAnswers().stream().map(AnswerPair::getQuestionId).collect(Collectors.toList());
         List<UmierExamQuestion> questions = umierExamDao.getExamQuestionByIds(userAnswer.getExamId(), questionIds);
         Map<Integer, UmierExamQuestion> qMap = questions.stream().collect(Collectors.toMap(UmierExamQuestion::getId, r -> r));
         int totalScore = 0;
-        List<UmierUserAnswer> umierUserAnswers = new LinkedList<>();
         for (AnswerPair it : userAnswer.getAnswers()) {
             UmierExamQuestion question = qMap.get(it.getQuestionId());
             int score = 0;
@@ -92,25 +88,46 @@ public class UmierExamService {
                    score = question.getScore();
                 }
             }
-
-            UmierUserAnswer answer = new UmierUserAnswer();
-            answer.setUnionId(userAnswer.getUnionId());
-            answer.setExamId(userAnswer.getExamId());
-            answer.setQuestionId(it.getQuestionId());
-            answer.setAnswer(it.getUserAnswer());
-            answer.setScore(score);
-            answer.setCreateTime(new Date());
-            answer.setState(0);
-            umierUserAnswers.add(answer);
-
             totalScore += score;
         }
-        umierExamDao.insertUserAnswer(umierUserAnswers);
+        UmierUserExamRecord record = new UmierUserExamRecord();
+        record.setUnionId(userAnswer.getUnionId());
+        record.setExamId(userAnswer.getExamId());
+        record.setShareId(UUID.randomUUID().toString().replaceAll("-",""));
+        record.setScore(totalScore);
+        record.setCreateTime(new Date());
+        record.setState(0);
+        umierExamDao.insertUserAnswer(record);
+        UmierExamRetRule rule = null;
+        List<UmierExamRetRule> rules = umierExamDao.getExamRetRules(userAnswer.getExamId());
+        for (UmierExamRetRule r : rules) {
+            if (totalScore >= r.getLowerScore() && totalScore < r.getUpperScore()) {
+                rule = r;
+            }
+        }
+
+        UmierExamUserRetVo ret = new UmierExamUserRetVo();
+        ret.setScore(totalScore);
+        ret.setSharId(record.getShareId());
+        if (rule != null) {
+            ret.setRet(rule.getDescription());
+            int acitivityId = rule.getGroupActivityId();
+
+        }
+        return ret;
     }
 
     public void addQuestions(int examId, UmierExamQuestionVo questionVo) {
         umierExamDao.insertQuestion(questionVo.toUmierExamQuestion(examId));
     }
 
-
+    public UmierExamShareVo getPageShareData(String shareId) {
+       UmierUserExamRecord record = umierExamDao.getUserExamRecord(shareId);
+       WxMpUserInfoVo currentUser = AuthInfoHolder.get();
+       boolean isSameUser = false;
+        if (currentUser.getUnionId().equals(record.getUnionId())) {
+            isSameUser = true;
+        }
+        return new UmierExamShareVo(isSameUser, record);
+    }
 }
