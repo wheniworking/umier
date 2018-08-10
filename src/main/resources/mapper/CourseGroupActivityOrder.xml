@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longwei.umier.dao.CourseGroupActivityOrderDao">
+
+    <resultMap id="countGroupMap" type="com.longwei.umier.vo.CourseGroupActivityGroupCountVo">
+        <result column="c_group_activity_id" property="activityId"/>
+        <result column="cnt" property="cnt"/>
+    </resultMap>
+
+    <select id="batchCountGroups" resultMap="countGroupMap">
+        SELECT c_group_activity_id, count(*) as cnt FROM t_course_group_activity_order
+        WHERE  c_type = 1
+        <if test="activityIds != null">
+            AND c_group_activity_id IN
+            <foreach collection="activityIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY c_group_activity_id
+
+    </select>
+    <select id="countGroupOrder" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_course_group_activity_order WHERE c_type = 1
+    </select>
+    <resultMap id="orderGroupMap" type="com.longwei.umier.vo.GroupOrderVo">
+        <result column="c_order_id" property="orderId"/>
+        <result column="c_group_activity_id" property="activityId"/>
+        <result column="c_union_id" property="unionId"/>
+        <result column="c_price" property="price"/>
+        <result column="c_state" property="state"/>
+        <result column="c_pt_id" property="ptId"/>
+        <result column="c_type" property="type"/>
+
+
+    </resultMap>
+    <select id="getGroupOrders" resultMap="orderGroupMap">
+        SELECT * FROM t_course_group_activity_order WHERE c_type = 1 ORDER BY c_create_time DESC
+        limit #{index}, #{size}
+    </select>
+    <select id="getParticipateGroupOrders" resultMap="orderGroupMap">
+        SELECT * FROM t_course_group_activity_order WHERE c_type = 1 AND
+        c_pt_id IN
+        <foreach collection="orderIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getGroupOrdersByOrderId" resultMap="orderGroupMap">
+        SELECT * FROM t_course_group_activity_order
+        WHERE
+        c_pt_id = #{ptId}
+
+    </select>
+</mapper>

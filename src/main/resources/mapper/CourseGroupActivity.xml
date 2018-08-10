@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longwei.umier.dao.CourseGroupActivityDao">
+
+
+    <insert id="insert">
+        INSERT INTO t_course_group_activity
+        (c_id, c_title, c_sub_title, c_desc, c_intro, c_image_url, c_single_price, c_group_price, c_pt_num, c_pt_period, c_start_time, c_end_time, c_create_time, c_state)
+        VALUES (
+          #{id},
+          #{title},
+          #{subTitle},
+          #{description},
+          #{imageUrl},
+          #{singlePrice},
+          #{groupPrice},
+          #{ptNum},
+          #{ptPeriod},
+          #{startTime},
+          #{endTime},
+          #{createTime},
+          #{state},
+        )
+    </insert>
+    <resultMap id="activityMap" type="com.longwei.umier.vo.CourseGroupActivityVo">
+        <result column="c_id" property="id"/>
+        <result column="c_image_url" property="imageUrl"/>
+        <result column="c_title" property="title"/>
+        <result column="c_single_price" property="singlePrice"/>
+        <result column="c_group_price" property="groupPrice"/>
+        <result column="c_pt_num" property="ptNum"/>
+        <result column="c_start_time" property="startTime"/>
+        <result column="c_end_time" property="endTime"/>
+        <result column="c_state" property="state"/>
+    </resultMap>
+    <select id="getGroupActivity" resultMap="activityMap">
+
+        SELECT c_id,c_image_url,c_title,c_single_price,c_group_price,c_pt_num,c_start_time,c_end_time,c_state
+        FROM t_course_group_activity ORDER BY c_create_time desc limit #{index} , #{size}
+
+    </select>
+    <select id="count" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM t_course_group_activity WHERE c_state = 0;
+    </select>
+    <select id="getByIds" resultMap="activityMap">
+        SELECT c_id,c_image_url,c_title,c_single_price,c_group_price,c_pt_num,c_start_time,c_end_time,c_state
+        FROM t_course_group_activity WHERE c_id IN
+        <foreach collection="ids" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+    <select id="getById" resultMap="activityMap">
+        SELECT * FROM t_course_group_activity
+        WHERE c_id = #{id}
+    </select>
+
+</mapper>

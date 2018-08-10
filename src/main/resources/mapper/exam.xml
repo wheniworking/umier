@@ -65,7 +65,7 @@
 
     <insert id="insertRules">
         INSERT INTO t_exam_ret_rule
-        (c_exam_id, c_desc, c_lower_score, c_upper_score, c_create_time, c_state)
+        (c_id, c_exam_id, c_desc, c_lower_score, c_upper_score, c_create_time, c_state)
         VALUES
         <foreach collection="rules" item="item" index="index" separator=",">
             (

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.longwei.umier.dao.WxUserDao">
+
+    <resultMap id="wxUser" type="com.longwei.umier.entity.WxUser">
+        <result column="c_union_id" property="unionId"/>
+        <result column="c_nickname" property="nickname"/>
+        <result column="c_phone" property="phone"/>
+        <result column="c_avatar" property="avatar"/>
+        <result column="c_sex" property="sex"/>
+    </resultMap>
+
+
+    <select id="getUserByUnionIds" resultMap="wxUser">
+        SELECT c_union_id, c_nickname, c_phone, c_avatar, c_sex, c_create_time, c_state
+        FROM t_wx_user
+        WHERE c_union_id IN
+        <foreach collection="unionIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+</mapper>
