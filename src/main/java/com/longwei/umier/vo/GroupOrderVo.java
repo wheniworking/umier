@@ -11,13 +11,17 @@ public class GroupOrderVo {
     private double price;
     private String unionId;
     private String nickName;
+    private String avatar;
     private int type;
     private int ptNum;
     private int diffNum;
     private Date startTime;
     private Date endTime;
+    private Date createTime;
     private int state;
-    private String parentOrderId;
+    private String ptId;
+    private long leftTime;
+
 
 
     public int getId() {
@@ -124,12 +128,12 @@ public class GroupOrderVo {
         this.state = state;
     }
 
-    public String getParentOrderId() {
-        return parentOrderId;
+    public String getPtId() {
+        return ptId;
     }
 
-    public void setParentOrderId(String parentOrderId) {
-        this.parentOrderId = parentOrderId;
+    public void setPtId(String ptId) {
+        this.ptId = ptId;
     }
 
     public int getType() {
@@ -138,5 +142,29 @@ public class GroupOrderVo {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public long getLeftTime() {
+        return leftTime;
+    }
+
+    public void setLeftTime(long leftTime) {
+        this.leftTime = leftTime;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(String avatar) {
+        this.avatar = avatar;
     }
 }

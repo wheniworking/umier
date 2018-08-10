@@ -53,4 +53,8 @@
         c_pt_id = #{ptId}
 
     </select>
+    <select id="getGroupByActivityId" resultType="com.longwei.umier.vo.GroupOrderVo">
+        SELECT * FROM t_course_group_activity_order
+        WHERE c_group_activity_id = #{activityId} and c_type = 1
+    </select>
 </mapper>

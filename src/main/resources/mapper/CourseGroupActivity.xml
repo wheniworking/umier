@@ -29,16 +29,20 @@
         <result column="c_id" property="id"/>
         <result column="c_image_url" property="imageUrl"/>
         <result column="c_title" property="title"/>
+        <result column="c_sub_title" property="subTitle"/>
+        <result column="c_desc" property="description"/>
+        <result column="c_intro" property="intro"/>
         <result column="c_single_price" property="singlePrice"/>
         <result column="c_group_price" property="groupPrice"/>
         <result column="c_pt_num" property="ptNum"/>
+        <result column="c_pt_period" property="period"/>
         <result column="c_start_time" property="startTime"/>
         <result column="c_end_time" property="endTime"/>
         <result column="c_state" property="state"/>
     </resultMap>
     <select id="getGroupActivity" resultMap="activityMap">
 
-        SELECT c_id,c_image_url,c_title,c_single_price,c_group_price,c_pt_num,c_start_time,c_end_time,c_state
+        SELECT *
         FROM t_course_group_activity ORDER BY c_create_time desc limit #{index} , #{size}
 
     </select>

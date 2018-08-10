@@ -77,11 +77,11 @@ public class AdminGroupActivityService {
                 vo.setNickName(u.getNickname());
             }
         }
-        List<String> ptIds = groupOrderVos.stream().map(GroupOrderVo::getOrderId).collect(Collectors.toList());
+        List<String> ptIds = groupOrderVos.stream().map(GroupOrderVo::getPtId).collect(Collectors.toList());
 
         List<GroupOrderVo> participateGroupOrderVos = courseGroupActivityOrderDao.getParticipateGroupOrders(ptIds);
         Map<String, List<GroupOrderVo>> participateGroupMap =
-                participateGroupOrderVos.stream().collect(Collectors.groupingBy(GroupOrderVo::getParentOrderId));
+                participateGroupOrderVos.stream().collect(Collectors.groupingBy(GroupOrderVo::getPtId));
 
         for (GroupOrderVo vo : groupOrderVos) {
             List<GroupOrderVo> g = participateGroupMap.get(vo.getOrderId());

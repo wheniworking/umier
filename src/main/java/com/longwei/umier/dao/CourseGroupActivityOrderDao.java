@@ -21,4 +21,6 @@ public interface CourseGroupActivityOrderDao {
     List<GroupOrderVo> getParticipateGroupOrders(@Param("ptIds") List<String> ptIds);
 
     List<GroupOrderVo> getGroupOrdersByOrderId(@Param("ptId")String ptId);
+
+    List<GroupOrderVo> getGroupByActivityId(@Param("activityId")int activityId);
 }
