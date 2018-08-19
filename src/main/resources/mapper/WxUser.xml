@@ -12,6 +12,19 @@
         <result column="c_avatar" property="avatar"/>
         <result column="c_sex" property="sex"/>
     </resultMap>
+    <insert id="insert">
+        INSERT INTO t_wx_user
+        (c_union_id, c_nickname, c_phone, c_avatar, c_sex, c_create_time, c_state)
+        VALUES (
+        #{unionId},
+        #{nickName},
+        #{phone},
+        #{avatar},
+        #{sex},
+        #{createTime},
+        #{state}
+        )
+    </insert>
 
 
     <select id="getUserByUnionIds" resultMap="wxUser">

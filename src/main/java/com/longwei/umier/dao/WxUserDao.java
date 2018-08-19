@@ -12,4 +12,5 @@ public interface WxUserDao {
 
     List<WxUser> getUserByUnionIds(@Param("unionIds")List<String> unionIds);
 
+    void insert(WxUser user);
 }

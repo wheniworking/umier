@@ -9,6 +9,23 @@
         <result column="c_group_activity_id" property="activityId"/>
         <result column="cnt" property="cnt"/>
     </resultMap>
+    <insert id="insert">
+
+        INSERT INTO t_course_group_activity_order
+        (c_order_id, c_group_activity_id, c_union_id, c_price, c_type, c_pay_state, c_refund_state, c_pt_id, c_create_time, c_state)
+        VALUES (
+        #{orderId},
+        #{groupActivityId},
+        #{unionId},
+        #{price},
+        #{type},
+        #{payState},
+        #{refundState},
+        #{ptId},
+        #{createTime},
+        #{state}
+        )
+    </insert>
 
     <select id="batchCountGroups" resultMap="countGroupMap">
         SELECT c_group_activity_id, count(*) as cnt FROM t_course_group_activity_order

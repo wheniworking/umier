@@ -1,6 +1,7 @@
 package com.longwei.umier.dao;
 
 import com.longwei.umier.entity.CourseGroupActivity;
+import com.longwei.umier.entity.CourseGroupActivityOrder;
 import com.longwei.umier.vo.CourseGroupActivityGroupCountVo;
 import com.longwei.umier.vo.CourseGroupActivityVo;
 import com.longwei.umier.vo.GroupOrderVo;
@@ -23,4 +24,6 @@ public interface CourseGroupActivityOrderDao {
     List<GroupOrderVo> getGroupOrdersByOrderId(@Param("ptId")String ptId);
 
     List<GroupOrderVo> getGroupByActivityId(@Param("activityId")int activityId);
+
+    void insert(CourseGroupActivityOrder order);
 }
