@@ -6,6 +6,9 @@ import com.longwei.umier.utils.ResponseBuilder;
 import com.longwei.umier.vo.UmierExamUserRetVo;
 import com.longwei.umier.vo.UmierUserAnswerVo;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.mp.api.WxMpService;
+import org.apache.commons.codec.digest.DigestUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/exam")
@@ -24,9 +29,12 @@ public class UmierExamController {
     private String shareExamRedirectUrl;
     private final UmierExamService umierExamService;
 
+    private final WxMpService wxMpService;
+
     @Autowired
-    public UmierExamController(UmierExamService umierExamService) {
+    public UmierExamController(UmierExamService umierExamService, WxMpService wxMpService) {
         this.umierExamService = umierExamService;
+        this.wxMpService = wxMpService;
     }
 
     /**
@@ -74,4 +82,24 @@ public class UmierExamController {
     public DataMap getPageShareData(@PathVariable String shareId){
         return ResponseBuilder.create().ok().data(umierExamService.getPageShareData(shareId)).build();
     }
+
+    @Value("${wx.appId}")
+    private String appId;
+    @GetMapping("/share/ticket")
+    public DataMap getTicket(@RequestParam("url")String url) throws WxErrorException {
+        String ticket = wxMpService.getJsapiTicket();
+        String noncestr = RandomStringUtils.randomAlphabetic(8);
+        long timestamp = System.currentTimeMillis();
+        String str = String.format("jsapi_ticket=%s&noncestr=%s&timestamp=%s&url=%s", ticket, noncestr, timestamp, url);
+        String sign = DigestUtils.sha1Hex(str);
+        System.out.println(str);
+        Map<String, Object> map = new HashMap<>();
+        map.put("noncestr", noncestr);
+        map.put("ticket", ticket);
+        map.put("ts", timestamp);
+        map.put("sign", sign);
+        map.put("appId", appId);
+        return ResponseBuilder.create().ok().data(map).build();
+    }
+
 }

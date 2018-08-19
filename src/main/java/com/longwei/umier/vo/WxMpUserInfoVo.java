@@ -147,11 +147,16 @@ public class WxMpUserInfoVo {
         WxMpUserInfoVo wxMpUserInfoVo = new WxMpUserInfoVo();
         try {
             for (Map.Entry<String, Object> e : map.entrySet()) {
-                Field field = wxMpUserInfoVo.getClass().getField(e.getKey());
-                field.setAccessible(true);
-                field.set(wxMpUserInfoVo, e.getValue());
+                try {
+                    Field field = wxMpUserInfoVo.getClass().getDeclaredField(e.getKey());
+                    field.setAccessible(true);
+                    field.set(wxMpUserInfoVo, e.getValue());
+                } catch (Exception e1) {
+
+                }
             }
         } catch (Exception e ) {
+            e.printStackTrace();
             return null;
         }
         return wxMpUserInfoVo;

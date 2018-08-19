@@ -50,11 +50,11 @@
     <select id="getExamQuestionsWithoutAnswer" resultMap="examQuestionMap">
         SELECT c_id, c_exam_id, c_question, c_choice, c_type, c_score, c_create_time, c_state FROM t_exam_question where c_exam_id = #{examId} and c_state = 0
     </select>
-    <select id="getExamQuestionByIds" resultType="com.longwei.umier.entity.UmierExamQuestion">
+    <select id="getExamQuestionByIds" resultMap="examQuestionMap">
         SELECT * FROM t_exam_question WHERE
         c_exam_id = #{examId} AND
         c_state = 0
-        <if test="unionids != null">
+        <if test="questionIds != null">
         AND c_id IN
             <foreach collection="questionIds" item="item" open="(" separator="," close=")">
                 #{item}

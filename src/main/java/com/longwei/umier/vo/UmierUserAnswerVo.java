@@ -4,18 +4,8 @@ import java.util.List;
 
 public class UmierUserAnswerVo {
 
-    private String unionId;
     private int examId;
     List<AnswerPair> answers;
-
-
-    public String getUnionId() {
-        return unionId;
-    }
-
-    public void setUnionId(String unionId) {
-        this.unionId = unionId;
-    }
 
     public int getExamId() {
         return examId;

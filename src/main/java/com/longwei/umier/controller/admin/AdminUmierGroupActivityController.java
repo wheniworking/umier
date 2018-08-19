@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/admin/groupActivity")
-public class UmierGroupActivityController {
+public class AdminUmierGroupActivityController {
 
     @Autowired
     private AdminGroupActivityService adminGroupActivityService;

@@ -4,12 +4,31 @@ import java.util.Date;
 
 public class UmierUserExamRecord {
 
+    private int id;
     private String unionId;
+    private String nickname;
+    private String ret;
     private int examId;
     private int score;
     private String shareId;
     private Date createTime;
     private int state;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getUnionId() {
         return unionId;
@@ -57,5 +76,13 @@ public class UmierUserExamRecord {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getRet() {
+        return ret;
+    }
+
+    public void setRet(String ret) {
+        this.ret = ret;
     }
 }

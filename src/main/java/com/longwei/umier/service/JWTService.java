@@ -13,7 +13,7 @@ import java.util.Map;
 public class JWTService {
 
     @Value("${jwt.key}")
-    private String keyStr;
+    private String keyStr ="MfGLANt5ewgefxqi6JGou6Y4spWGIjpDTmf-WjHzppg";
 
     private Key key;
 

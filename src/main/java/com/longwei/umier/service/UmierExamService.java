@@ -29,6 +29,7 @@ public class UmierExamService {
 
     public List<UmierExamQuestion> selectQuestions(int examId) {
         List<UmierExamQuestion> questions = umierExamDao.getExamQuestions(null, examId);
+        questions.forEach(it -> it.setAnswer(""));
         if(questions.size() <= MAX_QUESTION_NUMBER) return questions;
         Set<Integer> numberSet = new HashSet<>();
         while (numberSet.size() < 5){
@@ -76,6 +77,7 @@ public class UmierExamService {
 
 
     public UmierExamUserRetVo submitExam(UmierUserAnswerVo userAnswer) {
+        WxMpUserInfoVo userInfo = AuthInfoHolder.get();
         List<Integer> questionIds = userAnswer.getAnswers().stream().map(AnswerPair::getQuestionId).collect(Collectors.toList());
         List<UmierExamQuestion> questions = umierExamDao.getExamQuestionByIds(userAnswer.getExamId(), questionIds);
         Map<Integer, UmierExamQuestion> qMap = questions.stream().collect(Collectors.toMap(UmierExamQuestion::getId, r -> r));
@@ -91,7 +93,7 @@ public class UmierExamService {
             totalScore += score;
         }
         UmierUserExamRecord record = new UmierUserExamRecord();
-        record.setUnionId(userAnswer.getUnionId());
+        record.setUnionId(userInfo.getUnionId());
         record.setExamId(userAnswer.getExamId());
         record.setShareId(UUID.randomUUID().toString().replaceAll("-",""));
         record.setScore(totalScore);
@@ -111,7 +113,7 @@ public class UmierExamService {
         ret.setSharId(record.getShareId());
         if (rule != null) {
             ret.setRet(rule.getDescription());
-            int acitivityId = rule.getGroupActivityId();
+//            int acitivityId = rule.getGroupActivityId();
 
         }
         return ret;
@@ -124,10 +126,18 @@ public class UmierExamService {
     public UmierExamShareVo getPageShareData(String shareId) {
        UmierUserExamRecord record = umierExamDao.getUserExamRecord(shareId);
        WxMpUserInfoVo currentUser = AuthInfoHolder.get();
+       record.setNickname(currentUser.getNickname());
        boolean isSameUser = false;
         if (currentUser.getUnionId().equals(record.getUnionId())) {
             isSameUser = true;
         }
+        List<UmierExamRetRule> rules = umierExamDao.getExamRetRules(record.getExamId());
+        for (UmierExamRetRule r : rules) {
+            if (record.getScore() >= r.getLowerScore() && record.getScore() < r.getUpperScore()) {
+                record.setRet(r.getDescription());
+            }
+        }
+
         return new UmierExamShareVo(isSameUser, record);
     }
 }
