@@ -26,6 +26,11 @@ public class AdminExamController {
         return ResponseBuilder.create().ok().data(umierExamService.getExams()).build();
     }
 
+    @GetMapping("/rules/{examId}")
+    public DataMap getExamRules(@PathVariable int examId) {
+        return ResponseBuilder.create().ok().data(umierExamService.getExamRules(examId)).build();
+    }
+
     @GetMapping("/questions")
     public DataMap getExamQuestions(ExamQueryVo examQueryVo) {
         return ResponseBuilder.create().ok().data(umierExamService.getExamQuestions(examQueryVo)).build();

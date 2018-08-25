@@ -140,4 +140,8 @@ public class UmierExamService {
 
         return new UmierExamShareVo(isSameUser, record);
     }
+
+    public List<UmierExamRetRule> getExamRules(int examId) {
+        return umierExamDao.getExamRetRules(examId);
+    }
 }
