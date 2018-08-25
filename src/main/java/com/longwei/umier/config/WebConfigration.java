@@ -6,6 +6,7 @@ import com.longwei.umier.interceptor.WxAuthInteceptor;
 import com.longwei.umier.service.JWTService;
 import me.chanjar.weixin.mp.api.WxMpService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
@@ -23,12 +24,17 @@ public class WebConfigration  extends WebMvcConfigurerAdapter{
     @Autowired
     private JWTService jwtService;
 
+    @Bean
+    public AdminAuthInterceptor adminAuthInterceptor() {
+        return new AdminAuthInterceptor();
+    }
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
         registry.addInterceptor(new WxAuthInteceptor(jwtService, wxMpService, wxMpDao)).
                 addPathPatterns("/api/v1/exam/**");
-        registry.addInterceptor(new AdminAuthInterceptor()).
+        registry.addInterceptor(adminAuthInterceptor()).
                 addPathPatterns("/api/v1/admin/**").
                 excludePathPatterns("/api/v1/admin/auth/login");
         super.addInterceptors(registry);

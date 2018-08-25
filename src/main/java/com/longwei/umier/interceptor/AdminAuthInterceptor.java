@@ -4,13 +4,18 @@ import com.longwei.umier.service.SessionContext;
 import com.longwei.umier.utils.BaseException;
 import com.longwei.umier.utils.StatusCode;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
+
 
 public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
+
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -18,8 +23,9 @@ public class AdminAuthInterceptor extends HandlerInterceptorAdapter {
         if (StringUtils.isBlank(token)) {
             throw new BaseException(StatusCode.AUTH_ERROR);
         }
-        HttpSession session = SessionContext.getSession(token);
-        if (session == null) {
+        String username = redisTemplate.opsForValue().get("umier:admin:auth:" + token);
+
+        if (username == null) {
             throw new BaseException(StatusCode.AUTH_ERROR);
         }
         return super.preHandle(request, response, handler);
