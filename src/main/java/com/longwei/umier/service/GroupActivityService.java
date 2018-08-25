@@ -10,7 +10,7 @@ import com.longwei.umier.dao.WxUserDao;
 import com.longwei.umier.entity.CourseGroupActivity;
 import com.longwei.umier.entity.CourseGroupActivityOrder;
 import com.longwei.umier.entity.WxUser;
-import com.longwei.umier.interceptor.AuthInfoHolder;
+import com.longwei.umier.interceptor.WxAuthInfoHolder;
 import com.longwei.umier.utils.DateUtils;
 import com.longwei.umier.utils.ReturnModel;
 import com.longwei.umier.vo.ActivityInfoVo;
@@ -79,7 +79,7 @@ public class GroupActivityService {
     }
 
     public Map<String, String> orderCourse(OrderVo orderVo) {
-       WxMpUserInfoVo mpUserInfoVo = AuthInfoHolder.get();
+       WxMpUserInfoVo mpUserInfoVo = WxAuthInfoHolder.get();
         CourseGroupActivity activity = courseGroupActivityDao.getById(orderVo.getActivityId());
 
 //       private int id;

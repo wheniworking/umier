@@ -2,7 +2,7 @@ package com.longwei.umier.interceptor;
 
 import com.longwei.umier.vo.WxMpUserInfoVo;
 
-public class AuthInfoHolder {
+public class WxAuthInfoHolder {
 
     private static ThreadLocal<WxMpUserInfoVo> threadLocal = new ThreadLocal<>();
 

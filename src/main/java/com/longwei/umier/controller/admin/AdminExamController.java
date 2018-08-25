@@ -9,6 +9,8 @@ import com.longwei.umier.vo.UmierExamVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+
+@RestController
 @RequestMapping("/api/v1/admin/exam")
 public class AdminExamController {
 
@@ -24,7 +26,7 @@ public class AdminExamController {
         return ResponseBuilder.create().ok().data(umierExamService.getExams()).build();
     }
 
-    @GetMapping
+    @GetMapping("/questions")
     public DataMap getExamQuestions(ExamQueryVo examQueryVo) {
         return ResponseBuilder.create().ok().data(umierExamService.getExamQuestions(examQueryVo)).build();
     }
@@ -40,4 +42,6 @@ public class AdminExamController {
         umierExamService.addQuestions(examId, questionVo);
         return ResponseBuilder.create().ok().build();
     }
+
+
 }

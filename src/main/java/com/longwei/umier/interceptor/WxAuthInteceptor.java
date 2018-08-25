@@ -3,7 +3,6 @@ package com.longwei.umier.interceptor;
 import com.longwei.umier.dao.WxMpDao;
 import com.longwei.umier.entity.WxMp;
 import com.longwei.umier.service.JWTService;
-import com.longwei.umier.service.OAuth2Service;
 import com.longwei.umier.vo.WxMpUserInfoVo;
 import me.chanjar.weixin.common.api.WxConsts;
 import me.chanjar.weixin.common.error.WxErrorException;
@@ -11,7 +10,6 @@ import me.chanjar.weixin.mp.api.WxMpService;
 import me.chanjar.weixin.mp.bean.result.WxMpOAuth2AccessToken;
 import me.chanjar.weixin.mp.bean.result.WxMpUser;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.Cookie;
@@ -20,7 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
 
-public class AuthInteceptor extends HandlerInterceptorAdapter {
+public class WxAuthInteceptor extends HandlerInterceptorAdapter {
 
     private JWTService jwtService;
 
@@ -28,9 +26,9 @@ public class AuthInteceptor extends HandlerInterceptorAdapter {
 
     private WxMpDao wxMpDao;
 
-    public AuthInteceptor(JWTService jwtService,
-                          WxMpService wxMpService,
-                          WxMpDao wxMpDao) {
+    public WxAuthInteceptor(JWTService jwtService,
+                            WxMpService wxMpService,
+                            WxMpDao wxMpDao) {
         this.jwtService = jwtService;
         this.wxMpService = wxMpService;
         this.wxMpDao = wxMpDao;
@@ -44,7 +42,7 @@ public class AuthInteceptor extends HandlerInterceptorAdapter {
             for (Cookie cookie : cookies) {
                 if ("x-auth-token".equals(cookie.getName())) {
                     wxMpUserInfoVo = jwtService.decryptJWTToken(cookie.getValue());
-                    AuthInfoHolder.init(wxMpUserInfoVo);
+                    WxAuthInfoHolder.init(wxMpUserInfoVo);
                 }
             }
         }
@@ -88,20 +86,20 @@ public class AuthInteceptor extends HandlerInterceptorAdapter {
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
 
-        AuthInfoHolder.init(new WxMpUserInfoVo(wxMpUser));
+        WxAuthInfoHolder.init(new WxMpUserInfoVo(wxMpUser));
         //重定向到约定地址
 //        response.sendRedirect(String.format(wxMpStaticPage, page));
     }
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
-        AuthInfoHolder.clear();
+        WxAuthInfoHolder.clear();
         super.postHandle(request, response, handler, modelAndView);
     }
 
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
-        AuthInfoHolder.clear();
+        WxAuthInfoHolder.clear();
         super.afterCompletion(request, response, handler, ex);
     }
 }

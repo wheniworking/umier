@@ -2,7 +2,7 @@ package com.longwei.umier.service;
 
 import com.longwei.umier.dao.UmierExamDao;
 import com.longwei.umier.entity.*;
-import com.longwei.umier.interceptor.AuthInfoHolder;
+import com.longwei.umier.interceptor.WxAuthInfoHolder;
 import com.longwei.umier.vo.*;
 import org.apache.commons.lang3.RandomUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,7 +77,7 @@ public class UmierExamService {
 
 
     public UmierExamUserRetVo submitExam(UmierUserAnswerVo userAnswer) {
-        WxMpUserInfoVo userInfo = AuthInfoHolder.get();
+        WxMpUserInfoVo userInfo = WxAuthInfoHolder.get();
         List<Integer> questionIds = userAnswer.getAnswers().stream().map(AnswerPair::getQuestionId).collect(Collectors.toList());
         List<UmierExamQuestion> questions = umierExamDao.getExamQuestionByIds(userAnswer.getExamId(), questionIds);
         Map<Integer, UmierExamQuestion> qMap = questions.stream().collect(Collectors.toMap(UmierExamQuestion::getId, r -> r));
@@ -125,7 +125,7 @@ public class UmierExamService {
 
     public UmierExamShareVo getPageShareData(String shareId) {
        UmierUserExamRecord record = umierExamDao.getUserExamRecord(shareId);
-       WxMpUserInfoVo currentUser = AuthInfoHolder.get();
+       WxMpUserInfoVo currentUser = WxAuthInfoHolder.get();
        record.setNickname(currentUser.getNickname());
        boolean isSameUser = false;
         if (currentUser.getUnionId().equals(record.getUnionId())) {

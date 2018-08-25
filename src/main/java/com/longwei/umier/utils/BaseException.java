@@ -9,10 +9,17 @@ public class BaseException extends RuntimeException{
         this.message = message;
     }
 
+    public BaseException(StatusCode code) {
+        this.statusCode = code.getStatusCode();
+        this.message = code.getMessage();
+    }
+
     public BaseException(int statusCode) {
         this.statusCode = statusCode;
     }
 
 
-
+    public DataMap toResponse() {
+        return ResponseBuilder.create().code(statusCode).message(message).build();
+    }
 }
