@@ -48,5 +48,11 @@ public class AdminExamController {
         return ResponseBuilder.create().ok().build();
     }
 
+    @DeleteMapping("/{examId}")
+    public DataMap deleteExam(@PathVariable int examId) {
+        umierExamService.deleteExam(examId);
+        return ResponseBuilder.create().ok().build();
+    }
+
 
 }

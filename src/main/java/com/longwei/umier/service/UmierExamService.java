@@ -144,4 +144,10 @@ public class UmierExamService {
     public List<UmierExamRetRule> getExamRules(int examId) {
         return umierExamDao.getExamRetRules(examId);
     }
+
+    public void deleteExam(int examId) {
+        umierExamDao.deleteExam(examId);
+        umierExamDao.deleteExamQuestions(examId);
+        umierExamDao.deleteExamRule(examId);
+    }
 }

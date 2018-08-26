@@ -15,6 +15,15 @@
         INSERT INTO t_exam (c_id, c_exam_name, c_create_time, c_state) VALUES (#{id},#{name},#{createTime},#{state})
         ON duplicate key update c_exam_name = #{name}
     </insert>
+    <delete id="deleteExam">
+        UPDATE t_exam set c_state = 100 WHERE c_id = #{examId}
+    </delete>
+    <delete id="deleteExamQuestions">
+        UPDATE t_exam_question SET c_state = 100 WHERE c_exam_id = #{examId}
+    </delete>
+    <delete id="deleteExamRule">
+        UPDATE t_exam_ret_rule SET c_state = 100 WHERE c_exam_id = #{examId}
+    </delete>
 
     <select id="getExams" resultMap="examMap">
         SELECT * FROM t_exam WHERE c_state = 0

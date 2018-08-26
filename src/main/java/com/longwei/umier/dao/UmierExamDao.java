@@ -33,4 +33,10 @@ public interface UmierExamDao {
     void insertQuestion(UmierExamQuestion umierExamQuestion);
 
     UmierUserExamRecord getUserExamRecord(@Param("shareId") String shareId);
+
+    void deleteExam(@Param("examId")int examId);
+
+    void deleteExamQuestions(@Param("examId") int examId);
+
+    void deleteExamRule(@Param("examId")int examId);
 }
