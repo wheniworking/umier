@@ -102,14 +102,16 @@
     </insert>
     <insert id="insertQuestion">
         INSERT INTO t_exam_question
-        (c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
+        (c_id,c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
         VALUES
         (
+        #{id},
         #{examId},
         #{question},
         #{choice},
         #{type},
         #{answer},
+        #{score},
         #{createTime},
         #{state}
         )
