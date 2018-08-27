@@ -129,6 +129,7 @@
         c_type = values(c_type),
         c_answer = values(c_answer),
         c_score = values(c_score),
+        c_choice = values(c_choice),
         c_create_time = values(c_create_time),
         c_state = values(c_state)
 
