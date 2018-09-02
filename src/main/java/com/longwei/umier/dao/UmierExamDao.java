@@ -4,6 +4,7 @@ import com.longwei.umier.entity.UmierExam;
 import com.longwei.umier.entity.UmierExamQuestion;
 import com.longwei.umier.entity.UmierExamRetRule;
 import com.longwei.umier.entity.UmierUserExamRecord;
+import com.longwei.umier.service.ExamQuestionIdVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -22,11 +23,11 @@ public interface UmierExamDao {
 
     List<UmierExamQuestion> getExamQuestionsWithoutAnswer(@Param("examId")int examId);
 
-    List<UmierExamQuestion> getExamQuestionByIds(@Param("examId")int examId, @Param("questionIds")  List<Integer> questionIds);
+    List<UmierExamQuestion> getExamQuestionByIds( @Param("questionIds")  List<Integer> questionIds);
 
     void insertUserAnswer(UmierUserExamRecord record);
 
-    List<UmierExamRetRule> getExamRetRules(@Param("examId")int examId);
+    List<UmierExamRetRule> getExamRetRules();
 
     void insertRules(@Param("rules")List<UmierExamRetRule> questions);
 
@@ -39,4 +40,8 @@ public interface UmierExamDao {
     void deleteExamQuestions(@Param("examId") int examId);
 
     void deleteExamRule(@Param("examId")int examId);
+
+    List<ExamQuestionIdVo> selectQuestionsByExamId(@Param("examIds") List<Integer> examIds);
+
+    List<UmierExamQuestion> selectQuestions(@Param("quesIds")List<Integer> quesIds);
 }

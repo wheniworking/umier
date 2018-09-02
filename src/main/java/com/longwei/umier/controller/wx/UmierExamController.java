@@ -66,12 +66,12 @@ public class UmierExamController {
         return ResponseBuilder.create().ok().data(umierExamService.getExams()).build();
     }
 
-    @GetMapping("/{examId}/questions")
-    public DataMap getExamQuestions(@PathVariable("examId") int examId) {
-        return ResponseBuilder.create().ok().data(umierExamService.selectQuestions(examId)).build();
+    @GetMapping("/questions")
+    public DataMap getExamQuestions() {
+        return ResponseBuilder.create().ok().data(umierExamService.selectQuestions()).build();
     }
 
-    @PostMapping("/{examId}/submit")
+    @PostMapping("/submit")
     public DataMap submitExam(@RequestBody UmierUserAnswerVo userAnswer) {
         UmierExamUserRetVo ret = umierExamService.submitExam(userAnswer);
         return ResponseBuilder.create().ok().data(ret).build();

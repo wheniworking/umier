@@ -5,7 +5,7 @@ import java.util.Date;
 public class UmierExamRetRule {
 
     private int id;
-    private int examId;
+    private int examId=0;
     private int groupActivityId;
     private String description;
     private int lowerScore;

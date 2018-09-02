@@ -43,11 +43,11 @@ public class UmierExamRetRuleVo {
         this.upperScore = upperScore;
     }
 
-    public UmierExamRetRule toUmierExamRetRule(UmierExam exam) {
+    public UmierExamRetRule toUmierExamRetRule() {
         UmierExamRetRule rule = new UmierExamRetRule();
         rule.setId(this.id);
         rule.setDescription(this.description);
-        rule.setExamId(exam.getId());
+        rule.setExamId(0);
         rule.setLowerScore(this.lowerScore);
         rule.setUpperScore(this.upperScore);
         rule.setCreateTime(new Date());

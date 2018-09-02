@@ -145,20 +145,13 @@ public class WxMpUserInfoVo {
 
     public static WxMpUserInfoVo parse(Map<String, Object> map) {
         WxMpUserInfoVo wxMpUserInfoVo = new WxMpUserInfoVo();
-        try {
-            for (Map.Entry<String, Object> e : map.entrySet()) {
-                try {
-                    Field field = wxMpUserInfoVo.getClass().getDeclaredField(e.getKey());
-                    field.setAccessible(true);
-                    field.set(wxMpUserInfoVo, e.getValue());
-                } catch (Exception e1) {
-
-                }
-            }
-        } catch (Exception e ) {
-            e.printStackTrace();
-            return null;
-        }
+        wxMpUserInfoVo.setUnionId((String) map.get("unionId"));
+        wxMpUserInfoVo.setCity((String) map.get("city"));
+        wxMpUserInfoVo.setCountry((String) map.get("country"));
+        wxMpUserInfoVo.setNickname((String) map.get("nickname"));
+        wxMpUserInfoVo.setHeadImgUrl((String) map.get("headImgUrl"));
+        wxMpUserInfoVo.setProvince((String) map.get("province"));
+        wxMpUserInfoVo.setOpenId((String) map.get("openid"));
         return wxMpUserInfoVo;
     }
 }

@@ -11,6 +11,7 @@ public class UmierExamQuestionVo {
     private String choice;
     private int type;
     private String answer;
+    private String answerDesc;
     private int score;
 
     public int getId() {
@@ -59,6 +60,14 @@ public class UmierExamQuestionVo {
 
     public void setScore(int score) {
         this.score = score;
+    }
+
+    public String getAnswerDesc() {
+        return answerDesc;
+    }
+
+    public void setAnswerDesc(String answerDesc) {
+        this.answerDesc = answerDesc;
     }
 
     public UmierExamQuestion toUmierExamQuestion(int examId) {

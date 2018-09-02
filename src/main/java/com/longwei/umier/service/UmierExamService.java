@@ -14,8 +14,6 @@ import java.util.stream.Collectors;
 @Service
 public class UmierExamService {
 
-    private static final int MAX_QUESTION_NUMBER = 5;
-
     @Autowired
     private UmierExamDao umierExamDao;
 
@@ -27,20 +25,27 @@ public class UmierExamService {
         return umierExamDao.getExamQuestions(examQueryVo.getQuestionId(), examQueryVo.getExamId());
     }
 
-    public List<UmierExamQuestion> selectQuestions(int examId) {
-        List<UmierExamQuestion> questions = umierExamDao.getExamQuestions(null, examId);
-        questions.forEach(it -> it.setAnswer(""));
-        if(questions.size() <= MAX_QUESTION_NUMBER) return questions;
-        Set<Integer> numberSet = new HashSet<>();
-        while (numberSet.size() < 5){
-            numberSet.add(RandomUtils.nextInt(0, questions.size()));
+    public List<UmierExamQuestion> selectQuestions() {
+        List<UmierExam> exams = umierExamDao.getExams();
+        List<Integer> examIds = exams.stream().map(UmierExam::getId).collect(Collectors.toList());
+        List<ExamQuestionIdVo> examQuestionIdVos = umierExamDao.selectQuestionsByExamId(examIds);
+        Map<Integer, List<ExamQuestionIdVo>> map = examQuestionIdVos.stream().collect(Collectors.groupingBy(ExamQuestionIdVo::getExamId));
+        List<Integer> quesIds = new ArrayList<>(map.size());
+        for (Map.Entry<Integer, List<ExamQuestionIdVo>> e : map.entrySet()) {
+            quesIds.add(getRandomElement(e.getValue()).getQuestionId());
         }
+        List<UmierExamQuestion> questions = umierExamDao.selectQuestions(quesIds);
+        questions.forEach(it -> {
+            it.setAnswer("");
+            it.setAnswerDesc("");
+        });
+        return questions;
+    }
 
-        List<UmierExamQuestion> q = new ArrayList<>(MAX_QUESTION_NUMBER);
-        for (Integer i : numberSet) {
-            q.add(questions.get(i));
-        }
-        return q;
+    private <T> T getRandomElement(List<T> list) {
+        int size = list.size();
+        int randId = RandomUtils.nextInt(0, size);
+        return list.get(randId);
     }
 
     public void createExam(UmierExamVo examVo) {
@@ -49,73 +54,89 @@ public class UmierExamService {
         exam.setName(examVo.getName());
         exam.setCreateTime(new Date());
         umierExamDao.insert(exam);
-        List<UmierExamRetRule> persistRules = umierExamDao.getExamRetRules(exam.getId());
-        List<UmierExamRetRule> questions = mergeExamQuestions(exam, persistRules, examVo.getRetRules());
-        if(!questions.isEmpty()) {
+    }
+
+    public void createExamRules(List<UmierExamRetRuleVo> retRules) {
+        List<UmierExamRetRule> persistRules = umierExamDao.getExamRetRules();
+        List<UmierExamRetRule> questions = mergeExamQuestions(persistRules,retRules);
+        if (!questions.isEmpty()) {
             umierExamDao.insertRules(questions);
         }
     }
 
-    private List<UmierExamRetRule> mergeExamQuestions(UmierExam exam,
-                                                       List<UmierExamRetRule> persistQuestionVos,
-                                                       List<UmierExamRetRuleVo> requestQuestionVos) {
-        List<UmierExamRetRule> umierExamQuestions = new LinkedList<>();
-        Set<Integer> ids = requestQuestionVos.stream().map(UmierExamRetRuleVo::getId).collect(Collectors.toSet());
-        persistQuestionVos.forEach(it -> {
+    private List<UmierExamRetRule> mergeExamQuestions(List<UmierExamRetRule> persistRules,
+                                                      List<UmierExamRetRuleVo> requestRules) {
+        List<UmierExamRetRule> rules = new LinkedList<>();
+        Set<Integer> ids = requestRules.stream().map(UmierExamRetRuleVo::getId).collect(Collectors.toSet());
+        persistRules.forEach(it -> {
             if (!ids.contains(it.getId())) {
                 it.setState(100);
-                umierExamQuestions.add(it);
+                rules.add(it);
             }
         });
 
-        requestQuestionVos.forEach(it -> {
-            umierExamQuestions.add(it.toUmierExamRetRule(exam));
+        requestRules.forEach(it -> {
+            rules.add(it.toUmierExamRetRule());
         });
-
-        return umierExamQuestions;
+        return rules;
     }
 
 
     public UmierExamUserRetVo submitExam(UmierUserAnswerVo userAnswer) {
         WxMpUserInfoVo userInfo = WxAuthInfoHolder.get();
         List<Integer> questionIds = userAnswer.getAnswers().stream().map(AnswerPair::getQuestionId).collect(Collectors.toList());
-        List<UmierExamQuestion> questions = umierExamDao.getExamQuestionByIds(userAnswer.getExamId(), questionIds);
+        List<UmierExamQuestion> questions = umierExamDao.getExamQuestionByIds(questionIds);
         Map<Integer, UmierExamQuestion> qMap = questions.stream().collect(Collectors.toMap(UmierExamQuestion::getId, r -> r));
-        int totalScore = 0;
+        List<UmierExamQuestion> errorQuestions = new LinkedList<>();
+        int count = 0;
         for (AnswerPair it : userAnswer.getAnswers()) {
             UmierExamQuestion question = qMap.get(it.getQuestionId());
-            int score = 0;
             if (question != null) {
-                if (question.getAnswer().equals(it.getUserAnswer())) {
-                   score = question.getScore();
+                if (question.getAnswer().equalsIgnoreCase(it.getUserAnswer())) {
+                    count++;
+                } else {
+                    errorQuestions.add(question);
                 }
             }
-            totalScore += score;
         }
+        int totalScore = (int) (count * 100.0 / questionIds.size());
         UmierUserExamRecord record = new UmierUserExamRecord();
         record.setUnionId(userInfo.getUnionId());
-        record.setExamId(userAnswer.getExamId());
-        record.setShareId(UUID.randomUUID().toString().replaceAll("-",""));
+        record.setShareId(UUID.randomUUID().toString().replaceAll("-", ""));
         record.setScore(totalScore);
         record.setCreateTime(new Date());
         record.setState(0);
-        umierExamDao.insertUserAnswer(record);
+
         UmierExamRetRule rule = null;
-        List<UmierExamRetRule> rules = umierExamDao.getExamRetRules(userAnswer.getExamId());
+        UmierExamRetRule bestRule = null;
+        List<UmierExamRetRule> rules = umierExamDao.getExamRetRules();
         for (UmierExamRetRule r : rules) {
             if (totalScore >= r.getLowerScore() && totalScore < r.getUpperScore()) {
                 rule = r;
             }
+            if (bestRule == null) {
+                bestRule = r;
+            } else {
+                if (r.getUpperScore() > bestRule.getUpperScore()) {
+                    bestRule = r;
+                }
+            }
         }
+
 
         UmierExamUserRetVo ret = new UmierExamUserRetVo();
         ret.setScore(totalScore);
         ret.setSharId(record.getShareId());
         if (rule != null) {
             ret.setRet(rule.getDescription());
-//            int acitivityId = rule.getGroupActivityId();
-
+        } else {
+            if (totalScore == 100) {
+                ret.setRet(bestRule.getDescription());
+            }
         }
+        ret.setErrorQuestions(errorQuestions);
+        record.setRet(ret.getRet());
+        umierExamDao.insertUserAnswer(record);
         return ret;
     }
 
@@ -124,30 +145,24 @@ public class UmierExamService {
     }
 
     public UmierExamShareVo getPageShareData(String shareId) {
-       UmierUserExamRecord record = umierExamDao.getUserExamRecord(shareId);
-       WxMpUserInfoVo currentUser = WxAuthInfoHolder.get();
-       record.setNickname(currentUser.getNickname());
-       boolean isSameUser = false;
+        UmierUserExamRecord record = umierExamDao.getUserExamRecord(shareId);
+        WxMpUserInfoVo currentUser = WxAuthInfoHolder.get();
+        record.setNickname(currentUser.getNickname());
+        boolean isSameUser = false;
         if (currentUser.getUnionId().equals(record.getUnionId())) {
             isSameUser = true;
-        }
-        List<UmierExamRetRule> rules = umierExamDao.getExamRetRules(record.getExamId());
-        for (UmierExamRetRule r : rules) {
-            if (record.getScore() >= r.getLowerScore() && record.getScore() < r.getUpperScore()) {
-                record.setRet(r.getDescription());
-            }
         }
 
         return new UmierExamShareVo(isSameUser, record);
     }
 
-    public List<UmierExamRetRule> getExamRules(int examId) {
-        return umierExamDao.getExamRetRules(examId);
+
+    public List<UmierExamRetRule> getExamRules() {
+        return umierExamDao.getExamRetRules();
     }
 
     public void deleteExam(int examId) {
         umierExamDao.deleteExam(examId);
         umierExamDao.deleteExamQuestions(examId);
-        umierExamDao.deleteExamRule(examId);
     }
 }

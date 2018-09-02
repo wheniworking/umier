@@ -10,6 +10,7 @@ public class UmierExamQuestion {
     private String choice;
     private int type;
     private String answer;
+    private String answerDesc;
     private int score;
     private Date createTime;
     private int state;
@@ -85,5 +86,13 @@ public class UmierExamQuestion {
 
     public void setState(int state) {
         this.state = state;
+    }
+
+    public String getAnswerDesc() {
+        return answerDesc;
+    }
+
+    public void setAnswerDesc(String answerDesc) {
+        this.answerDesc = answerDesc;
     }
 }

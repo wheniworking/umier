@@ -39,6 +39,7 @@
         <result column="c_choice" property="choice"/>
         <result column="c_type" property="type"/>
         <result column="c_answer" property="answer"/>
+        <result column="c_answer_desc" property="answerDesc"/>
         <result column="c_score" property="score"/>
         <result column="c_create_time" property="createTime"/>
         <result column="c_state" property="state"/>
@@ -61,7 +62,6 @@
     </select>
     <select id="getExamQuestionByIds" resultMap="examQuestionMap">
         SELECT * FROM t_exam_question WHERE
-        c_exam_id = #{examId} AND
         c_state = 0
         <if test="questionIds != null">
         AND c_id IN
@@ -70,6 +70,8 @@
             </foreach>
         </if>
     </select>
+
+
 
 
     <insert id="insertRules">
@@ -98,20 +100,20 @@
     </insert>
     <insert id="insertUserAnswer">
         INSERT INTO t_exam_user
-        (c_union_id, c_exam_id, c_share_id, c_score, c_create_time, c_state)
+        (c_union_id, c_share_id, c_score,c_score_ret, c_create_time, c_state)
         VALUES
         (
         #{unionId},
-        #{examId},
         #{shareId},
         #{score},
+        #{ret},
         #{createTime},
         #{state}
         )
     </insert>
     <insert id="insertQuestion">
         INSERT INTO t_exam_question
-        (c_id,c_exam_id, c_question, c_choice, c_type, c_answer, c_score, c_create_time, c_state)
+        (c_id,c_exam_id, c_question, c_choice, c_type, c_answer,c_answer_desc, c_score, c_create_time, c_state)
         VALUES
         (
         #{id},
@@ -120,6 +122,7 @@
         #{choice},
         #{type},
         #{answer},
+        #{answerDesc},
         #{score},
         #{createTime},
         #{state}
@@ -128,6 +131,7 @@
         c_question = values(c_question),
         c_type = values(c_type),
         c_answer = values(c_answer),
+        c_answer_desc = values(c_answer_desc),
         c_score = values(c_score),
         c_choice = values(c_choice),
         c_create_time = values(c_create_time),
@@ -145,7 +149,7 @@
         <result column="c_state" property="state"/>
     </resultMap>
     <select id="getExamRetRules" resultMap="examRetRuleMap">
-        SELECT * FROM t_exam_ret_rule WHERE c_exam_id = #{examId} and c_state = 0
+        SELECT * FROM t_exam_ret_rule WHERE  c_state = 0
     </select>
 
     <resultMap id="examUserRecord" type="com.longwei.umier.entity.UmierUserExamRecord">
@@ -154,6 +158,7 @@
         <result column="c_union_id" property="unionId"/>
         <result column="c_nickname" property="nickname"/>
         <result column="c_score" property="score"/>
+        <result column="c_score_ret" property="ret"/>
         <result column="c_create_time" property="createTime"/>
         <result column="c_state" property="state"/>
     </resultMap>
@@ -161,4 +166,26 @@
         SELECT * FROM t_exam_user WHERE c_share_id = #{shareId} and c_state = 0
     </select>
 
+    <resultMap id="ExamQuestionIdVoMap" type="com.longwei.umier.service.ExamQuestionIdVo">
+        <result column="c_id" property="questionId"/>
+        <result column="c_exam_id" property="examId"/>
+    </resultMap>
+    <select id="selectQuestionsByExamId" resultMap="ExamQuestionIdVoMap">
+        select c_id,c_exam_id from t_exam_question WHERE c_state = 0
+        AND c_exam_id IN
+        <foreach collection="examIds" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </select>
+
+    <select id="selectQuestions" resultMap="examQuestionMap">
+        SELECT * FROM t_exam_question WHERE
+        c_state = 0
+        <if test="quesIds != null">
+            AND c_id IN
+            <foreach collection="quesIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
 </mapper>
