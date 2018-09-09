@@ -44,8 +44,8 @@ public class UmierExamController {
      * @throws IOException
      */
     @GetMapping("/page/{shareId}")
-    public void getSharePage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.sendRedirect(shareExamRedirectUrl);
+    public void getSharePage(@PathVariable("shareId")String shareId, HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(String.format(shareExamRedirectUrl, shareId));
     }
 
     /**
