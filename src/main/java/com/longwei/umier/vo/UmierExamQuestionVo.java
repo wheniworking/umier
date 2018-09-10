@@ -77,6 +77,7 @@ public class UmierExamQuestionVo {
         q.setQuestion(question);
         q.setChoice(choice);
         q.setAnswer(answer);
+        q.setAnswerDesc(answerDesc);
         q.setScore(score);
         q.setType(type);
         q.setCreateTime(new Date());
