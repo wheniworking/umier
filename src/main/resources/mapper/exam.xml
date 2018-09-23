@@ -138,6 +138,23 @@
         c_state = values(c_state)
 
     </insert>
+    <insert id="insertUserExamHistory">
+
+        INSERT INTO t_exam_user_history
+        (c_union_id, c_question_id, c_answer,c_is_correct, c_create_time, c_state)
+        VALUES
+        <foreach collection="histories" item="item" index="index" separator=",">
+            (
+            #{item.unionId},
+            #{item.questionId},
+            #{item.answer},
+            #{item.correct},
+            #{item.createTime},
+            #{item.state}
+            )
+        </foreach>
+
+    </insert>
 
     <resultMap id="examRetRuleMap" type="com.longwei.umier.entity.UmierExamRetRule">
         <result column="c_id" property="id"/>
@@ -187,5 +204,8 @@
                 #{item}
             </foreach>
         </if>
+    </select>
+    <select id="getUserExamRecordList" resultMap="examUserRecord">
+        SELECT * FROM t_exam_user where c_state = 0 order by c_id desc limit #{index}, #{size}
     </select>
 </mapper>

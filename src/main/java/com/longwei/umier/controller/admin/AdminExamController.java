@@ -63,5 +63,11 @@ public class AdminExamController {
         return ResponseBuilder.create().ok().build();
     }
 
+    @GetMapping("/record/history/list")
+    public DataMap getUserExamRecord(@RequestParam int index,
+                                     @RequestParam int size) {
+        return ResponseBuilder.create().ok().data(umierExamService.getUserExamRecord(index, size)).build();
+    }
+
 
 }

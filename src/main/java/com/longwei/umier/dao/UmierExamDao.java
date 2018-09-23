@@ -1,12 +1,10 @@
 package com.longwei.umier.dao;
 
-import com.longwei.umier.entity.UmierExam;
-import com.longwei.umier.entity.UmierExamQuestion;
-import com.longwei.umier.entity.UmierExamRetRule;
-import com.longwei.umier.entity.UmierUserExamRecord;
+import com.longwei.umier.entity.*;
 import com.longwei.umier.service.ExamQuestionIdVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -44,4 +42,8 @@ public interface UmierExamDao {
     List<ExamQuestionIdVo> selectQuestionsByExamId(@Param("examIds") List<Integer> examIds);
 
     List<UmierExamQuestion> selectQuestions(@Param("quesIds")List<Integer> quesIds);
+
+    List<UmierUserExamRecord> getUserExamRecordList(@Param("index") int index, @Param("size")int size);
+
+    void insertUserExamHistory(@Param("histories") List<UserExamHistory> histories);
 }

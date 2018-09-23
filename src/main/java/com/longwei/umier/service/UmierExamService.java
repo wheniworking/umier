@@ -58,7 +58,7 @@ public class UmierExamService {
 
     public void createExamRules(List<UmierExamRetRuleVo> retRules) {
         List<UmierExamRetRule> persistRules = umierExamDao.getExamRetRules();
-        List<UmierExamRetRule> questions = mergeExamQuestions(persistRules,retRules);
+        List<UmierExamRetRule> questions = mergeExamQuestions(persistRules, retRules);
         if (!questions.isEmpty()) {
             umierExamDao.insertRules(questions);
         }
@@ -89,16 +89,26 @@ public class UmierExamService {
         Map<Integer, UmierExamQuestion> qMap = questions.stream().collect(Collectors.toMap(UmierExamQuestion::getId, r -> r));
         List<UmierExamQuestion> errorQuestions = new LinkedList<>();
         int count = 0;
+        List<UserExamHistory> histories = new ArrayList<>();
         for (AnswerPair it : userAnswer.getAnswers()) {
             UmierExamQuestion question = qMap.get(it.getQuestionId());
+            UserExamHistory history = new UserExamHistory();
+            history.setUnionId(userInfo.getUnionId());
+            history.setQuestionId(it.getQuestionId());
+            history.setAnswer(it.getUserAnswer());
+            history.setCreateTime(new Date());
+            history.setState(0);
             if (question != null) {
                 if (question.getAnswer().equalsIgnoreCase(it.getUserAnswer())) {
                     count++;
+                    history.setCorrect(true);
                 } else {
                     errorQuestions.add(question);
                 }
             }
+            histories.add(history);
         }
+        umierExamDao.insertUserExamHistory(histories);
         int totalScore = (int) (count * 100.0 / questionIds.size());
         UmierUserExamRecord record = new UmierUserExamRecord();
         record.setUnionId(userInfo.getUnionId());
@@ -164,5 +174,9 @@ public class UmierExamService {
     public void deleteExam(int examId) {
         umierExamDao.deleteExam(examId);
         umierExamDao.deleteExamQuestions(examId);
+    }
+
+    public Object getUserExamRecord(int index, int size) {
+        return umierExamDao.getUserExamRecordList(index * size, size);
     }
 }
