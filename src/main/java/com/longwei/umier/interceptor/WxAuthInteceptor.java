@@ -65,13 +65,13 @@ public class WxAuthInteceptor extends HandlerInterceptorAdapter {
     }
 
     private String buildOAuth2Url(String url) {
-        return wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_BASE, null);
+        return wxMpService.oauth2buildAuthorizationUrl(url, WxConsts.OAuth2Scope.SNSAPI_USERINFO, null);
     }
 
     private void oauth(HttpServletRequest request, HttpServletResponse response ) throws WxErrorException, IOException {
         String code = request.getParameter("code");
         WxMpOAuth2AccessToken wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
-        WxMpUser wxMpUser = wxMpService.getUserService().userInfo(wxMpOAuth2AccessToken.getOpenId(), "zh_CN");
+        WxMpUser wxMpUser = wxMpService.oauth2getUserInfo(wxMpOAuth2AccessToken, "zh_CN");
         WxMp wxMp = new WxMp();
         wxMp.setUnionId(wxMpUser.getUnionId());
         wxMp.setOpenId(wxMpUser.getOpenId());

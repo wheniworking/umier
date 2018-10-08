@@ -100,10 +100,11 @@
     </insert>
     <insert id="insertUserAnswer">
         INSERT INTO t_exam_user
-        (c_union_id, c_share_id, c_score,c_score_ret, c_create_time, c_state)
+        (c_union_id,c_nickname, c_share_id, c_score,c_score_ret, c_create_time, c_state)
         VALUES
         (
         #{unionId},
+        #{nickname},
         #{shareId},
         #{score},
         #{ret},

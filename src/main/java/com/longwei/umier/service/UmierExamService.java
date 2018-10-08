@@ -112,6 +112,7 @@ public class UmierExamService {
         int totalScore = (int) (count * 100.0 / questionIds.size());
         UmierUserExamRecord record = new UmierUserExamRecord();
         record.setUnionId(userInfo.getUnionId());
+        record.setNickname(userInfo.getNickname());
         record.setShareId(UUID.randomUUID().toString().replaceAll("-", ""));
         record.setScore(totalScore);
         record.setCreateTime(new Date());
