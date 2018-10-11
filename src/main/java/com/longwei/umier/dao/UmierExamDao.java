@@ -46,4 +46,6 @@ public interface UmierExamDao {
     List<UmierUserExamRecord> getUserExamRecordList(@Param("index") int index, @Param("size")int size);
 
     void insertUserExamHistory(@Param("histories") List<UserExamHistory> histories);
+
+    int countUserExam();
 }

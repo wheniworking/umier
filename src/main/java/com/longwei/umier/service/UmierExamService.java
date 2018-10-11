@@ -178,6 +178,9 @@ public class UmierExamService {
     }
 
     public Object getUserExamRecord(int index, int size) {
-        return umierExamDao.getUserExamRecordList(index * size, size);
+        Map map = new HashMap();
+        map.put("list", umierExamDao.getUserExamRecordList(index * size, size));
+        map.put("total", umierExamDao.countUserExam());
+        return map;
     }
 }

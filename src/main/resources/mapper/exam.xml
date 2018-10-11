@@ -209,4 +209,7 @@
     <select id="getUserExamRecordList" resultMap="examUserRecord">
         SELECT * FROM t_exam_user where c_state = 0 order by c_id desc limit #{index}, #{size}
     </select>
+    <select id="countUserExam" resultType="java.lang.Integer">
+        select count(*) from t_exam_user where c_state = 0 ;
+    </select>
 </mapper>
